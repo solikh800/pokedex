@@ -1,10 +1,10 @@
 import {Platform} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
-const colors = require('./colors');
+import colors from './colors';
 
 export default {
   text: {
-    color: colors.black,
+    color: colors.white,
     fontSize: RFPercentage(1.8),
     fontFamily: Platform.os === 'android' ? 'vazir' : 'vazir',
   },

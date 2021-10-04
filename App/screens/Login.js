@@ -5,6 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import * as Yup from 'yup';
@@ -14,6 +15,7 @@ import Container from '../components/Container';
 import colors from '../config/colors';
 import {AppForm, AppFormField, SubmitButton} from '../components/forms';
 import Icon from 'react-native-vector-icons/AntDesign';
+import CheckBox from 'react-native-check-box';
 
 const validationSchema = Yup.object().shape({
   user: Yup.string().required().min(5).max(264).label('User'),
@@ -21,6 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 const Login = props => {
   const [loading, setLoading] = useState(false);
+  const [isChecked, setisChecked] = useState(false);
 
   const sendMessage = async (val, resetForm) => {
     setLoading(true);
@@ -32,7 +35,7 @@ const Login = props => {
     <Container style={styles.container}>
       <View style={styles.titleContainer}>
         <Icon name="login" size={RFPercentage(5)} color={colors.grey5} />
-        <AppText style={styles.textTitle}>LOGIN</AppText>
+        <AppText style={styles.textTitle}>Log in</AppText>
       </View>
       <View style={styles.scrollContainer}>
         <ScrollView contentContainerStyle={styles.scroll}>
@@ -58,9 +61,28 @@ const Login = props => {
               autoCapitalize="none"
               secureTextEntry
             />
-
-            <SubmitButton title="Login" />
+            <View style={{flexDirection: 'row'}}>
+              <CheckBox
+                style={{marginHorizontal: RFPercentage(1)}}
+                onClick={() => {
+                  setisChecked(!isChecked);
+                }}
+                isChecked={isChecked}
+                checkBoxColor={colors.grey3}
+                // leftText={'CheckBox'}
+              />
+              <AppText>Remember me </AppText>
+            </View>
+            <SubmitButton title="Log in" />
           </AppForm>
+          <View style={styles.buttomTextContainer}>
+            <AppText style={styles.buttomText}>Don't have an account?</AppText>
+            <TouchableOpacity>
+              <AppText style={[styles.buttomText, {color: colors.accent}]}>
+                Sign up
+              </AppText>
+            </TouchableOpacity>
+          </View>
           {loading && (
             <View style={styles.containerActivity}>
               <ActivityIndicator
@@ -111,6 +133,15 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttomTextContainer: {
+    marginVertical: RFPercentage(3.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttomText: {
+    fontSize: RFPercentage(2),
+    marginVertical: RFPercentage(0.5),
   },
 });
 
