@@ -2,6 +2,8 @@ import axios from 'axios';
 import address from '../../config/address';
 import {ToastAndroid} from 'react-native';
 export const FULL_DATA = 'FULL_DATA';
+export const ADD_BOOKMARK = 'ADD_BOOKMARK';
+export const REMOVE_BOOKMARK = 'REMOVE_BOOKMARK';
 
 let netFalse = 'Please check your internet conection';
 const tostFunc = errmessage => {
@@ -31,16 +33,11 @@ export const getDataPokemon = pageNumber => {
         });
         return finalData;
       };
-      const news = pokemonDetiles(data);
+      const resultData = pokemonDetiles(data);
       dispatch({
         type: FULL_DATA,
-        data: news,
+        data: resultData,
       });
-
-      // dispatch({
-      //   type: FULL_DATA,
-      //   data: fullData,
-      // });
     } catch (error) {
       if (!!error.message) {
         if (error.response !== undefined) {
@@ -50,5 +47,24 @@ export const getDataPokemon = pageNumber => {
         }
       }
     }
+  };
+};
+
+export const addBookmark = idAdd => {
+  return dispatch => {
+    dispatch({
+      type: ADD_BOOKMARK,
+      idAddFov: idAdd,
+    });
+  };
+};
+export const removeBookmark = id => {
+  return async (dispatch, getState) => {
+    const {pokemonReducer} = getState();
+    const filtered = pokemonReducer.fovData.filter(p => p.id !== id);
+    dispatch({
+      type: REMOVE_BOOKMARK,
+      idRemoveFov: filtered,
+    });
   };
 };

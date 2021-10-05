@@ -8,20 +8,18 @@ import {
   Image,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
-import {getDataPokemon} from '../store/actions/dataPokemon';
+import {removeBookmark} from '../store/actions/dataPokemon';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 
 import AppText from '../components/AppText';
 import Container from '../components/Container';
 import colors from '../config/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector} from 'react-redux';
-import {TouchableOpacity} from 'react-native';
 import PokemonCard from '../components/PokemonCard.js';
 
-const Home = ({navigation}) => {
+const Bookmark = ({navigation}) => {
   const dispatch = useDispatch();
-  const data = useSelector(state => state.pokemonReducer.fullData);
+  const data = useSelector(state => state.pokemonReducer.fovData);
 
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +30,9 @@ const Home = ({navigation}) => {
       setLoading(false);
     }, 1000);
   }, []);
-
+  const deleteItem = dataItem => {
+    dispatch(removeBookmark(dataItem.id));
+  };
   return (
     <Container style={styles.container}>
       <Image
@@ -40,6 +40,7 @@ const Home = ({navigation}) => {
         style={{width: 200, height: 70}}
         source={require('../assets/img/title.png')}
       />
+      <AppText>Bookmark</AppText>
 
       <FlatList
         style={{width: '100%'}}
@@ -51,8 +52,7 @@ const Home = ({navigation}) => {
             item={item}
             index={index}
             navigation={navigation}
-
-            //  onPress={onPress}
+            deleteItem={() => deleteItem(item)}
           />
         )}
       />
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     fontSize: RFPercentage(2.7),
     marginVertical: RFPercentage(1),
   },
+
   ActivityIndicator: {
     width: '100%',
     height: '100%',
@@ -100,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default Bookmark;

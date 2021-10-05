@@ -27,9 +27,11 @@ const Login = ({navigation}) => {
 
   const sendMessage = async (val, resetForm) => {
     setLoading(true);
-    Alert.alert('Login');
-    setLoading(false);
-    resetForm();
+    setTimeout(() => {
+      setLoading(false);
+      resetForm();
+      navigation.replace('BottomTab');
+    }, 1500);
   };
   return (
     <Container style={styles.container}>

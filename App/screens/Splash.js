@@ -3,8 +3,11 @@ import {View, StyleSheet, ImageBackground, Animated} from 'react-native';
 import colors from '../config/colors';
 import AppText from './../components/AppText';
 import {RFPercentage} from 'react-native-responsive-fontsize';
+import {getDataPokemon} from '../store/actions/dataPokemon';
+import {useDispatch} from 'react-redux';
 
 const Splash = ({navigation}) => {
+  const dispatch = useDispatch();
   const translation = useRef(new Animated.Value(RFPercentage(110))).current;
 
   useEffect(() => {
@@ -13,6 +16,7 @@ const Splash = ({navigation}) => {
       useNativeDriver: true,
       duration: 1200,
     }).start();
+    dispatch(getDataPokemon());
   }, []);
 
   return (
