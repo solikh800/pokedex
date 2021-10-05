@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useRef, useState} from 'react';
-import {View, StyleSheet, ActivityIndicator, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  Alert,
+} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import * as Yup from 'yup';
 import Axios from 'axios';
@@ -11,6 +18,7 @@ import colors from '../config/colors';
 import {AppForm, AppFormField, SubmitButton} from '../components/forms';
 import address from '../config/address';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PokemonCard from './../components/PokemonCard.js';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().min(3).max(264).label('Name'),
@@ -22,13 +30,12 @@ const Search = ({navigation}) => {
 
   const sendMessage = async (val, resetForm) => {
     setLoading(true);
-    console.log(val);
     await Axios.get(`${address.server}/${val.name}`)
       .then(res => {
-        resetForm();
         handleClose();
-        console.log(res);
-        setData(res);
+        resetForm();
+        console.log('res', res);
+        setData([res.data]);
         setTimeout(() => {
           setLoading(false);
         }, 500);
@@ -37,13 +44,11 @@ const Search = ({navigation}) => {
         setTimeout(() => {
           setLoading(false);
           setTimeout(() => {
-            setvisibleError(true);
             if (!!err.message) {
               if (err.response !== undefined) {
-                // console.log(err.response);
-                setvisibleError(true);
+                console.log(err.response);
+                Alert.alert('Search', err.response.data);
               } else {
-                setvisibleError(true);
               }
             }
           }, 1);
@@ -101,6 +106,17 @@ const Search = ({navigation}) => {
             name={openClose === true ? 'chevron-up' : 'chevron-down'}
             size={RFPercentage(3)}
             color={colors.grey3}
+          />
+
+          <FlatList
+            style={{width: '100%'}}
+            // style={{height: 500}}
+            data={data}
+            keyExtractor={item => item.id.toString()}
+            numColumns="2"
+            renderItem={({item, index}) => (
+              <PokemonCard item={item} index={index} navigation={navigation} />
+            )}
           />
         </Animated.View>
       </View>
