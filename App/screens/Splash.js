@@ -27,12 +27,12 @@ const Splash = ({navigation}) => {
         <View style={styles.container}>
           <AppText
             style={styles.signup}
-            onPress={() => navigation.navigate('Register')}>
+            onPress={() => navigation.replace('Register')}>
             Sign up
           </AppText>
           <AppText
             style={styles.login}
-            onPress={() => navigation.navigate('Login')}>
+            onPress={() => navigation.replace('Login')}>
             Log in
           </AppText>
           <AppText style={styles.wellcom}>wellcom to the pokemon go</AppText>
@@ -59,22 +59,22 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   signup: {
-    fontSize: RFPercentage(4),
+    fontSize: RFPercentage(3),
     fontWeight: '700',
-    width: RFPercentage(25),
+    width: RFPercentage(22),
     backgroundColor: colors.medium,
-    padding: RFPercentage(3),
+    padding: RFPercentage(2.5),
     borderRadius: RFPercentage(3),
     position: 'absolute',
     left: RFPercentage(2),
     top: RFPercentage(5),
   },
   login: {
-    fontSize: RFPercentage(4),
+    fontSize: RFPercentage(3),
     fontWeight: '700',
-    width: RFPercentage(25),
+    width: RFPercentage(22),
     backgroundColor: colors.secondary,
-    padding: RFPercentage(3),
+    padding: RFPercentage(2.5),
     borderRadius: RFPercentage(3),
     position: 'absolute',
     right: RFPercentage(2),

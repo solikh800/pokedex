@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: RFPercentage(5),
-    fontSize: RFPercentage(2.3),
+    fontSize: RFPercentage(2.1),
     fontWeight: '800',
     backgroundColor: '#ffcc5c',
     width: RFPercentage(15),
