@@ -21,7 +21,7 @@ const validationSchema = Yup.object().shape({
   user: Yup.string().required().min(5).max(264).label('User'),
   password: Yup.string().required().min(5).max(264).label('Password'),
 });
-const Login = props => {
+const Login = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [isChecked, setisChecked] = useState(false);
 
@@ -77,7 +77,7 @@ const Login = props => {
           </AppForm>
           <View style={styles.buttomTextContainer}>
             <AppText style={styles.buttomText}>Don't have an account?</AppText>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
               <AppText style={[styles.buttomText, {color: colors.accent}]}>
                 Sign up
               </AppText>

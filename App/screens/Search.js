@@ -10,53 +10,25 @@ import Container from '../components/Container';
 import colors from '../config/colors';
 import {AppForm, AppFormField, SubmitButton} from '../components/forms';
 import address from '../config/address';
-import ModalError from './../components/modalAlert/modalError';
-import Icon from './../components/icon/index';
-import AppRadioButton from '../components/AppRadioButton';
-import MusicFlatList from '../components/MusicFlatList';
-import ArtistFlatList from '../components/ArtistFlatList';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const validationSchema = Yup.object().shape({
-  text: Yup.string()
-    .required('وارد کردن این فیلد الزامیست')
-    .min(3, 'حداقل 3 کاراکتر میباشد')
-    .max(264, 'حداکثر 264 کاراکتر میباشد')
-    .label('Text'),
+  name: Yup.string().required().min(3).max(264).label('Name'),
 });
 const Search = ({navigation}) => {
-  const [check, setcheck] = useState({
-    label: 'نام خواننده',
-    name: 'artist',
-  });
-  const [containerView, setContainerView] = useState('');
-  const [dataArtist, setDataArtist] = useState([]);
+  const [data, setData] = useState([]);
   const [openClose, setOpenClose] = useState(true);
-  const [dataTitle, setDataTitle] = useState([]);
-  const [visibleError, setvisibleError] = useState(false);
-  const [errorText, setEroorText] = useState('خطا در ورود اطلاعات');
   const [loading, setLoading] = useState(false);
 
   const sendMessage = async (val, resetForm) => {
-    const dataSearch = {val, check};
     setLoading(true);
-    await Axios.post(`${address.server}/search`, JSON.stringify(dataSearch), {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    console.log(val);
+    await Axios.get(`${address.server}/${val.name}`)
       .then(res => {
         resetForm();
-        if (res.data.length !== 0) {
-          setContainerView(check.name);
-          if (check.name === 'artist') {
-            setDataArtist(res.data);
-          } else if (check.name === 'title' || check.name === 'other') {
-            setDataTitle(res.data);
-          }
-          handleClose();
-        } else {
-          setContainerView('nothing');
-        }
+        handleClose();
+        console.log(res);
+        setData(res);
         setTimeout(() => {
           setLoading(false);
         }, 500);
@@ -68,20 +40,15 @@ const Search = ({navigation}) => {
             setvisibleError(true);
             if (!!err.message) {
               if (err.response !== undefined) {
-                setEroorText(err.response.data.message);
+                // console.log(err.response);
                 setvisibleError(true);
               } else {
-                setEroorText('لطفا اتصال اینترنت خود را بررسی کنید');
                 setvisibleError(true);
               }
             }
           }, 1);
         }, 500);
       });
-  };
-
-  const handlevisibleError = () => {
-    setvisibleError(false);
   };
 
   const translation = useRef(new Animated.Value(0)).current;
@@ -95,7 +62,7 @@ const Search = ({navigation}) => {
   };
   const handleClose = () => {
     Animated.timing(translation, {
-      toValue: RFPercentage(-31),
+      toValue: RFPercentage(-20),
       useNativeDriver: true,
       duration: 1200,
     }).start();
@@ -105,19 +72,7 @@ const Search = ({navigation}) => {
   return (
     <Container style={styles.container}>
       <View style={styles.titleContainer}>
-        <Icon
-          name="music"
-          tuoch
-          size={RFPercentage(2.7)}
-          color={colors.danger}
-        />
-        <AppText style={styles.textTitle}>جستجوی آهنگ </AppText>
-        <Icon
-          name="music"
-          tuoch
-          size={RFPercentage(2.7)}
-          color={colors.danger}
-        />
+        <AppText style={styles.textTitle}>Search for a pokemon</AppText>
       </View>
       <View style={styles.scrollContainer}>
         <Animated.View
@@ -126,54 +81,27 @@ const Search = ({navigation}) => {
             alignItems: 'center',
             transform: [{translateY: translation}],
           }}>
-          <AppText style={styles.textSubtitle}>
-            جستجو را بر اساس نام خواننده نام آهنگ یا سایر موارد انجام دهید{' '}
-          </AppText>
           <AppForm
-            initialValues={{text: ''}}
+            initialValues={{name: ''}}
             onSubmit={(values, {resetForm}) => sendMessage(values, resetForm)}
             validationSchema={validationSchema}>
             <AppFormField
-              name="text"
-              placeholder={`جستجو بر اساس : ${check.label}`}
+              name="name"
+              placeholder="Searching using Pokemon’s name :"
               icon="search"
               autoCorrect={false}
               autoCapitalize="none"
             />
-            <AppRadioButton selectedBtn={e => setcheck(e)} />
 
-            <SubmitButton title="جستجو کن" />
+            <SubmitButton title="ُSearch Now" />
           </AppForm>
-          {dataArtist.length !== 0 || dataTitle.length !== 0 ? (
-            <Icon
-              onPress={openClose === false ? handleOpen : handleClose}
-              name={openClose === true ? 'up' : 'down'}
-              tuoch
-              size={RFPercentage(3)}
-            />
-          ) : null}
 
-          {containerView !== 'nothing' ? (
-            containerView === 'artist' ? (
-              <ArtistFlatList
-                data={dataArtist}
-                onPress={() => console.log('press', dataArtist)}
-                navigation={navigation}
-              />
-            ) : containerView === 'title' || containerView === 'other' ? (
-              <MusicFlatList data={dataTitle} />
-            ) : null
-          ) : (
-            <>
-              <AppText
-                style={[
-                  styles.textTitle,
-                  {fontSize: RFPercentage(2), color: colors.danger},
-                ]}>
-                متاسفانه آهنگ مورد نظر شما یافت نشد
-              </AppText>
-            </>
-          )}
+          <Icon
+            onPress={openClose === false ? handleOpen : handleClose}
+            name={openClose === true ? 'chevron-up' : 'chevron-down'}
+            size={RFPercentage(3)}
+            color={colors.grey3}
+          />
         </Animated.View>
       </View>
       {loading && (
@@ -189,21 +117,11 @@ const Search = ({navigation}) => {
           <ActivityIndicator size="large" color={colors.grey5} />
         </View>
       )}
-
-      <ModalError
-        visibleError={visibleError}
-        title="خطا درارسال اطلاعات"
-        text={errorText}
-        onPressVisible={handlevisibleError}
-      />
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollContainer: {
     alignItems: 'center',
     width: '100%',

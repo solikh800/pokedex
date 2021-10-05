@@ -1,20 +1,26 @@
+import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import Login from './App/screens/Login';
-import Register from './App/screens/Register';
+
+import navigationThems from './App/navigation/navigationThems';
+import store from './App/store/index';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistStore} from 'redux-persist';
+
+import StartNavigator from './App/navigation/StartNavigator';
+
+const peristedStore = persistStore(store);
+
 const App = props => {
   return (
-    <View style={styles.container}>
-      <Register />
-    </View>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={peristedStore}>
+        <NavigationContainer theme={navigationThems}>
+          <StartNavigator />
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default App;

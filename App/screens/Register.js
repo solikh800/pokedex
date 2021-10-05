@@ -5,7 +5,6 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-  Touchable,
   TouchableOpacity,
 } from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
@@ -23,16 +22,16 @@ const validationSchema = Yup.object().shape({
   mail: Yup.string().required().email().label('Email'),
   password: Yup.string().required().min(5).max(264).label('Password'),
 });
-const Register = props => {
+const Register = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [isChecked, setisChecked] = useState(false);
 
   const sendMessage = async (val, resetForm) => {
     setLoading(true);
     setTimeout(() => {
-      Alert.alert('Register');
       setLoading(false);
       resetForm();
+      navigation.navigate('Login');
     }, 1500);
   };
   return (
@@ -100,7 +99,7 @@ const Register = props => {
             <AppText style={styles.buttomText}>
               Already have an account?
             </AppText>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <AppText style={[styles.buttomText, {color: colors.accent}]}>
                 Log in
               </AppText>
